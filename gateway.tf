@@ -1,7 +1,7 @@
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.my_vpc.id
+  vpc_id = aws_vpc.saa_vpc.id
   tags = {
-    Name = "my_igw"
+    Name = "saa_igw"
   }
 }
 
@@ -14,6 +14,6 @@ resource "aws_nat_gateway" "nat_gw" {
   subnet_id     = aws_subnet.public_subnet.id
   depends_on    = [aws_internet_gateway.igw]
   tags = {
-    Name = "my_nat_gw"
+    Name = "saa_nat_gw"
   }
 }
