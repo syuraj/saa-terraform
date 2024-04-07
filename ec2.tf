@@ -3,7 +3,7 @@ resource "aws_instance" "bastion_host" {
   instance_type   = "t2.micro"
   subnet_id       = aws_subnet.public_subnet.id
   key_name        = "suraj-key"
-  security_groups = [aws_security_group.allow_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
 
   tags = {
     Name = "BastionHost"
@@ -15,6 +15,7 @@ resource "aws_instance" "private_instance_1" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.private_subnet_1.id
   key_name      = "suraj-key"
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
 
   tags = {
     Name = "PrivateInstance1"
@@ -26,6 +27,7 @@ resource "aws_instance" "private_instance_2" {
   instance_type = "t2.micro"
   subnet_id     = aws_subnet.private_subnet_2.id
   key_name      = "suraj-key"
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
 
   tags = {
     Name = "PrivateInstance2"
@@ -33,6 +35,7 @@ resource "aws_instance" "private_instance_2" {
 }
 
 resource "aws_security_group" "allow_ssh" {
+  name = "allow_ssh"
   vpc_id = aws_vpc.saa_vpc.id
 
   ingress {
