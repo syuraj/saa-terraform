@@ -45,3 +45,33 @@ resource "aws_security_group" "alb_sg" {
     Name = "alb-sg"
   }
 }
+
+resource "aws_lb_target_group" "saa-public-lb-target-group" {
+  name     = "saa-public-lb-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.saa_vpc.id
+}
+
+
+resource "aws_lb_listener" "saa-public-lb-listener" {
+  load_balancer_arn = aws_lb.public_lb.arn
+  port              = 80
+  protocol          = "HTTP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
+  }
+}
+
+resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach1" {
+  target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
+  target_id        = aws_instance.private_instance_1.id
+  port             = 80
+}
+
+resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach2" {
+  target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
+  target_id        = aws_instance.private_instance_2.id
+  port             = 80
+}
