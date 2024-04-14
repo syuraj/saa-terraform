@@ -6,6 +6,7 @@ phases:
       nodejs: 16
     commands:
       - echo Installing source NPM dependencies...
+      - cd $CODEBUILD_SRC_DIR/demo-app/backend
       - npm install
   build:
     commands:
