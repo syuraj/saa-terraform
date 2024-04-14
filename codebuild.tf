@@ -5,7 +5,10 @@ resource "aws_codebuild_project" "demo-app-codebuild" {
   service_role  = aws_iam_role.codebuild_codedeploy_role.arn
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type      = "S3"
+    location  = aws_s3_bucket.artifact_bucket.id
+    name      = "demo-app.zip"
+    packaging = "ZIP"
   }
 
   environment {
