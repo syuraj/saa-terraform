@@ -6,7 +6,7 @@ resource "aws_codedeploy_app" "demo-app-codedeploy" {
 resource "aws_codedeploy_deployment_group" "demo-app-codedeploy-group" {
   app_name              = aws_codedeploy_app.demo-app-codedeploy.name
   deployment_group_name = "demo-app-deployment-group"
-  service_role_arn      = "arn:aws:iam::068852463551:role/saa-codedeploy-role"
+  service_role_arn      = aws_iam_role.codebuild_codedeploy_role.arn
 
   deployment_style {
     deployment_option = "WITH_TRAFFIC_CONTROL"
@@ -80,16 +80,3 @@ resource "aws_codedeploy_deployment_group" "demo-app-codedeploy-group" {
 #   ignore_application_stop_failures = true
 # }
 
-
-resource "aws_codedeploy_deployment" "my_deployment" {
-  app_name              = aws_codedeploy_app.my_app.name
-  deployment_group_name = aws_codedeploy_deployment_group.my_group.deployment_group_name
-  revision {
-    revision_type = "S3"
-    s3_location {
-      bucket      = aws_s3_bucket.my_bucket.bucket
-      key         = "my-application.zip"
-      bundle_type = "zip"
-    }
-  }
-}

@@ -7,7 +7,8 @@ resource "aws_codebuild_project" "demo-app-codebuild" {
   artifacts {
     type      = "S3"
     location  = aws_s3_bucket.artifact_bucket.id
-    name      = "demo-app.zip"
+    name      = "demo-app-codebuild"
+    path      = "demo-app/"
     packaging = "ZIP"
   }
 
@@ -20,6 +21,12 @@ resource "aws_codebuild_project" "demo-app-codebuild" {
     environment_variable {
       name  = "EXAMPLE_ENV_VAR"
       value = "example-value"
+    }
+
+    environment_variable {
+      name  = "CODEBUILD_CONFIG_AUTO_DISCOVER"
+      type  = "PLAINTEXT"
+      value = "true"
     }
   }
 
