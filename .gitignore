@@ -1,3 +1,6 @@
 
 .terraform
 demo-app/backend/node_modules/
+demo-app/backend/demo-app.zip
+terraform.tfstate.*
+terraform.tfstate.backup

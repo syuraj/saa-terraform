@@ -13,11 +13,15 @@ resource "aws_codedeploy_deployment_group" "demo-app-codedeploy-group" {
     deployment_type   = "IN_PLACE"
   }
 
-  ec2_tag_filter {
-    type  = "KEY_AND_VALUE"
-    key   = "app"
-    value = "demo-app"
+  ec2_tag_set {
+    ec2_tag_filter {
+      type  = "KEY_AND_VALUE"
+      key   = "app"
+      value = "demo-app"
+    }
   }
+
+
 
   load_balancer_info {
     target_group_info {

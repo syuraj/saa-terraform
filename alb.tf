@@ -66,12 +66,12 @@ resource "aws_lb_listener" "saa-public-lb-listener" {
 
 resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach1" {
   target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
-  target_id        = aws_instance.private_instance_1.id
+  target_id        = aws_instance.private_instances[0].id
   port             = 80
 }
 
 resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach2" {
   target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
-  target_id        = aws_instance.private_instance_2.id
+  target_id        = aws_instance.private_instances[1].id
   port             = 80
 }
