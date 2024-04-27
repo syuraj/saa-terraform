@@ -17,6 +17,7 @@ resource "aws_instance" "private_instances" {
   subnet_id              = count.index == 0 ? aws_subnet.private_subnet_1.id : aws_subnet.private_subnet_2.id
   key_name               = "suraj-key"
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  iam_instance_profile   = aws_iam_instance_profile.ec2_web_server_profile.name
 
   tags = {
     "Name" = "PrivateInstance${count.index + 1}",
@@ -47,4 +48,57 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+resource "aws_iam_role" "ec2_web_server_role" {
+  name = "ec2-webserver-role"
 
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = [
+            "ec2.amazonaws.com"
+          ]
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "webserver_policy" {
+  name = "webserver-Policy"
+
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+          ],
+          "Resource" : "arn:aws:logs:*:*:*"
+        }
+      ]
+    }
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "webserver_s3_policy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  role       = aws_iam_role.ec2_web_server_role.name
+}
+
+resource "aws_iam_instance_profile" "ec2_web_server_profile" {
+  name = "ec2-webserver-profile"
+  role = aws_iam_role.ec2_web_server_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "webserver_policy_attachment" {
+  role       = aws_iam_role.ec2_web_server_role.name
+  policy_arn = aws_iam_policy.webserver_policy.arn
+}
