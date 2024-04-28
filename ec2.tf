@@ -3,7 +3,7 @@ resource "aws_instance" "bastion_host" {
   instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public_subnet.id
   key_name               = "suraj-key"
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  vpc_security_group_ids = [aws_security_group.web_server_sg.id]
 
   tags = {
     Name = "BastionHost"
@@ -16,7 +16,7 @@ resource "aws_instance" "private_instances" {
   instance_type          = "t2.micro"
   subnet_id              = count.index == 0 ? aws_subnet.private_subnet_1.id : aws_subnet.private_subnet_2.id
   key_name               = "suraj-key"
-  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
+  vpc_security_group_ids = [aws_security_group.web_server_sg.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_web_server_profile.name
 
   tags = {
@@ -25,15 +25,26 @@ resource "aws_instance" "private_instances" {
   }
 }
 
-resource "aws_security_group" "allow_ssh" {
-  name   = "allow_ssh"
+resource "aws_security_group" "web_server_sg" {
+  name   = "web_server_sg"
   vpc_id = aws_vpc.saa_vpc.id
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Consider restricting this to known IPs for security
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    cidr_blocks = []
+    from_port   = 3000
+    protocol    = "tcp"
+    security_groups = [
+      "sg-06bbd2a99c9dc44d2",
+    ]
+    self    = false
+    to_port = 3000
   }
 
   egress {
@@ -44,7 +55,7 @@ resource "aws_security_group" "allow_ssh" {
   }
 
   tags = {
-    Name = "allow_ssh"
+    Name = "web_server_sg"
   }
 }
 

@@ -48,14 +48,17 @@ resource "aws_security_group" "alb_sg" {
 
 resource "aws_lb_target_group" "saa-public-lb-target-group" {
   name     = "saa-public-lb-target-group"
-  port     = 80
+  port     = 3000
   protocol = "HTTP"
   vpc_id   = aws_vpc.saa_vpc.id
   health_check {
-    interval = 10
-    healthy_threshold = 3
+    interval            = 10
+    healthy_threshold   = 3
     unhealthy_threshold = 2
+    port                = 3000
   }
+
+  deregistration_delay = 10
 }
 
 
@@ -72,11 +75,11 @@ resource "aws_lb_listener" "saa-public-lb-listener" {
 resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach1" {
   target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
   target_id        = aws_instance.private_instances[0].id
-  port             = 80
+  port             = 3000
 }
 
 resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach2" {
   target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
   target_id        = aws_instance.private_instances[1].id
-  port             = 80
+  port             = 3000
 }
