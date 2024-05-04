@@ -12,7 +12,7 @@ resource "aws_instance" "bastion_host" {
 
 resource "aws_instance" "private_instances" {
   count                  = 2
-  ami                    = "ami-051f8a213df8bc089"
+  ami                    = "ami-0030623d3c9896d1a"
   instance_type          = "t2.micro"
   subnet_id              = count.index == 0 ? aws_subnet.private_subnet_1.id : aws_subnet.private_subnet_2.id
   key_name               = "suraj-key"
@@ -41,7 +41,7 @@ resource "aws_security_group" "web_server_sg" {
     from_port   = 3000
     protocol    = "tcp"
     security_groups = [
-      "sg-06bbd2a99c9dc44d2",
+      aws_security_group.alb_sg.id
     ]
     self    = false
     to_port = 3000
