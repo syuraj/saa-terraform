@@ -10,17 +10,17 @@ resource "aws_instance" "bastion_host" {
   }
 }
 
-resource "aws_instance" "private_instances" {
+resource "aws_instance" "public_instances" {
   count                  = 2
   ami                    = "ami-0030623d3c9896d1a"
   instance_type          = "t2.micro"
-  subnet_id              = count.index == 0 ? aws_subnet.private_subnet_1.id : aws_subnet.private_subnet_2.id
+  subnet_id              = aws_subnet.public_subnet.id
   key_name               = "suraj-key"
   vpc_security_group_ids = [aws_security_group.web_server_sg.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_web_server_profile.name
 
   tags = {
-    "Name" = "PrivateInstance${count.index + 1}",
+    "Name" = "publicInstance${count.index + 1}",
     "app"  = "demo-app"
   }
 }
