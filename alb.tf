@@ -3,7 +3,7 @@ resource "aws_lb" "public_lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = [aws_subnet.private_subnet_1.id, aws_subnet.private_subnet_2.id]
+  subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
 
   enable_deletion_protection = false
 
@@ -74,12 +74,12 @@ resource "aws_lb_listener" "saa-public-lb-listener" {
 
 resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach1" {
   target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
-  target_id        = aws_instance.private_instances[0].id
+  target_id        = aws_instance.public_instances[0].id
   port             = 3000
 }
 
 resource "aws_lb_target_group_attachment" "saa-public-lb-target-group-attach2" {
   target_group_arn = aws_lb_target_group.saa-public-lb-target-group.arn
-  target_id        = aws_instance.private_instances[1].id
+  target_id        = aws_instance.public_instances[1].id
   port             = 3000
 }

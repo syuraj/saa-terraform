@@ -1,7 +1,7 @@
 resource "aws_instance" "bastion_host" {
   ami                    = "ami-051f8a213df8bc089"
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.public_subnet.id
+  subnet_id              = aws_subnet.public_subnet_1.id
   key_name               = "suraj-key"
   vpc_security_group_ids = [aws_security_group.web_server_sg.id]
 
@@ -14,7 +14,7 @@ resource "aws_instance" "public_instances" {
   count                  = 2
   ami                    = "ami-0030623d3c9896d1a"
   instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.public_subnet.id
+  subnet_id              = aws_subnet.public_subnet_1.id
   key_name               = "suraj-key"
   vpc_security_group_ids = [aws_security_group.web_server_sg.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_web_server_profile.name
